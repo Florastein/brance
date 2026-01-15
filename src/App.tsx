@@ -7,7 +7,9 @@ import Courses from './pages/Courses';
 import Assessments from './pages/Assessments';
 import Analytics from './pages/Analytics';
 import Messaging from './pages/Messaging';
+import CourseBuilder from './pages/CourseBuilder';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { UserProvider } from './contexts/UserContext';
 
 const theme = createTheme({
   palette: {
@@ -25,17 +27,20 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/assessments" element={<Assessments />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/messaging" element={<Messaging />} />
-        </Routes>
-      </Router>
+      <UserProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/assessments" element={<Assessments />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/messaging" element={<Messaging />} />
+            <Route path="/course-builder" element={<CourseBuilder />} />
+          </Routes>
+        </Router>
+      </UserProvider>
     </ThemeProvider>
   );
 };

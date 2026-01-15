@@ -1,11 +1,62 @@
 import React, { useState } from 'react';
-import { Container, Paper, Tabs, Tab, Box, TextField, Button, Typography, Grid } from '@mui/material';
+import { Container, Paper, Tabs, Tab, Box, TextField, Button, Typography, Grid, Alert } from '@mui/material';
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, OAuthProvider } from 'firebase/auth';
 
 const Auth: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
+    setError(null);
+  };
+
+  const handleSignUp = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      setError(null);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setError(null);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      setError(null);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+  const handleMicrosoftSignIn = async () => {
+    const provider = new OAuthProvider('microsoft.com');
+    try {
+      await signInWithPopup(auth, provider);
+      setError(null);
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -15,17 +66,20 @@ const Auth: React.FC = () => {
           <Tab label="Login" />
           <Tab label="Sign Up" />
         </Tabs>
+        {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
         <TabPanel value={selectedTab} index={0}>
           <Typography variant="h5" component="h1" gutterBottom align="center">
             Login
           </Typography>
-          <form>
+          <form onSubmit={handleLogin}>
             <TextField
               label="Email"
               type="email"
               fullWidth
               margin="normal"
               variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               label="Password"
@@ -33,6 +87,8 @@ const Auth: React.FC = () => {
               fullWidth
               margin="normal"
               variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               type="submit"
@@ -52,6 +108,7 @@ const Auth: React.FC = () => {
                 <Button
                 variant="outlined"
                 fullWidth
+                onClick={handleGoogleSignIn}
                 >
                 Google
                 </Button>
@@ -60,6 +117,7 @@ const Auth: React.FC = () => {
                 <Button
                 variant="outlined"
                 fullWidth
+                onClick={handleMicrosoftSignIn}
                 >
                 Microsoft
                 </Button>
@@ -70,13 +128,15 @@ const Auth: React.FC = () => {
           <Typography variant="h5" component="h1" gutterBottom align="center">
             Sign Up
           </Typography>
-          <form>
+          <form onSubmit={handleSignUp}>
             <TextField
               label="Email"
               type="email"
               fullWidth
               margin="normal"
               variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               label="Password"
@@ -84,6 +144,8 @@ const Auth: React.FC = () => {
               fullWidth
               margin="normal"
               variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <TextField
               label="Confirm Password"
@@ -91,6 +153,8 @@ const Auth: React.FC = () => {
               fullWidth
               margin="normal"
               variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <Button
               type="submit"
