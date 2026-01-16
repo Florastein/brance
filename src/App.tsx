@@ -8,18 +8,25 @@ import Assessments from './pages/Assessments';
 import Analytics from './pages/Analytics';
 import Messaging from './pages/Messaging';
 import CourseBuilder from './pages/CourseBuilder';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { CssBaseline, ThemeProvider, createTheme, Box } from '@mui/material';
 import { UserProvider } from './contexts/UserContext';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90caf9',
+      main: '#bb86fc',
     },
     secondary: {
-      main: '#f48fb1',
+      main: '#03dac6',
     },
+    background: {
+      default: 'rgba(0, 0, 0, 0.5)',
+      paper: 'rgba(0, 0, 0, 0.7)',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
   },
 });
 
@@ -30,15 +37,23 @@ const App: React.FC = () => {
       <UserProvider>
         <Router>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/assessments" element={<Assessments />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/messaging" element={<Messaging />} />
-            <Route path="/course-builder" element={<CourseBuilder />} />
-          </Routes>
+          <Box sx={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '1rem',
+            margin: '2rem',
+            padding: '2rem'
+          }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/assessments" element={<Assessments />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/messaging" element={<Messaging />} />
+              <Route path="/course-builder" element={<CourseBuilder />} />
+            </Routes>
+          </Box>
         </Router>
       </UserProvider>
     </ThemeProvider>
