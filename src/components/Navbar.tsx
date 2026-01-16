@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button, IconButton, Box } from '@mui/material';
 import { useUser } from '../contexts/UserContext';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+import SchoolIcon from '@mui/icons-material/School';
 
 const Navbar: React.FC = () => {
   const { user, loading } = useUser();
@@ -17,24 +18,39 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" color="transparent" elevation={0}>
       <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Learning Platform</Link>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          component={RouterLink}
+          to="/"
+          sx={{ mr: 2 }}
+        >
+          <SchoolIcon />
+        </IconButton>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <RouterLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            Learnify
+          </RouterLink>
         </Typography>
-        <Button color="inherit" component={Link} to="/courses">Courses</Button>
-        <Button color="inherit" component={Link} to="/assessments">Assessments</Button>
-        <Button color="inherit" component={Link} to="/analytics">Analytics</Button>
-        <Button color="inherit" component={Link} to="/messaging">Messaging</Button>
+        <Box>
+          <Button color="inherit" component={RouterLink} to="/courses">Courses</Button>
+          <Button color="inherit" component={RouterLink} to="/course-builder">Create</Button>
+          <Button color="inherit" component={RouterLink} to="/assessments">Assessments</Button>
+          <Button color="inherit" component={RouterLink} to="/analytics">Analytics</Button>
+          <Button color="inherit" component={RouterLink} to="/messaging">Messaging</Button>
+        </Box>
         {loading ? (
-          <Typography>Loading...</Typography>
+          <Typography sx={{ ml: 2 }}>Loading...</Typography>
         ) : user ? (
-          <>
-            <Typography style={{ marginRight: '1rem' }}>{user.email}</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+            <Typography sx={{ mr: 2 }}>{user.email}</Typography>
             <Button color="inherit" onClick={handleLogout}>Logout</Button>
-          </>
+          </Box>
         ) : (
-          <Button color="inherit" component={Link} to="/auth">Login</Button>
+          <Button color="inherit" component={RouterLink} to="/auth" sx={{ ml: 2 }}>Login</Button>
         )}
       </Toolbar>
     </AppBar>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Paper, Tabs, Tab, Box, TextField, Button, Typography, Grid, Alert } from '@mui/material';
+import { Container, Paper, Tabs, Tab, Box, TextField, Button, Typography, Grid, Alert, Avatar } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, OAuthProvider } from 'firebase/auth';
 
@@ -13,6 +14,9 @@ const Auth: React.FC = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
     setError(null);
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   const handleSignUp = async (event: React.FormEvent) => {
@@ -60,141 +64,91 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '2rem' }}>
-      <Paper elevation={3} style={{ padding: '2rem' }}>
-        <Tabs value={selectedTab} onChange={handleChange} centered>
+    <Container component="main" maxWidth="xs" sx={{ mt: 8 }}>
+      <Paper elevation={6} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          {selectedTab === 0 ? 'Sign in' : 'Sign up'}
+        </Typography>
+        <Tabs value={selectedTab} onChange={handleChange} centered sx={{ mb: 2 }}>
           <Tab label="Login" />
           <Tab label="Sign Up" />
         </Tabs>
-        {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
-        <TabPanel value={selectedTab} index={0}>
-          <Typography variant="h5" component="h1" gutterBottom align="center">
-            Login
-          </Typography>
-          <form onSubmit={handleLogin}>
+        {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
+        <Box component="form" onSubmit={selectedTab === 0 ? handleLogin : handleSignUp} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {selectedTab === 1 && (
             <TextField
-              label="Email"
-              type="email"
-              fullWidth
               margin="normal"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              label="Password"
-              type="password"
+              required
               fullWidth
-              margin="normal"
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: '1rem' }}
-            >
-              Login
-            </Button>
-          </form>
-          <Box my={2}>
-            <Typography align="center">Or</Typography>
-          </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-                <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleGoogleSignIn}
-                >
-                Google
-                </Button>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-                <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleMicrosoftSignIn}
-                >
-                Microsoft
-                </Button>
-            </Grid>
-          </Grid>
-        </TabPanel>
-        <TabPanel value={selectedTab} index={1}>
-          <Typography variant="h5" component="h1" gutterBottom align="center">
-            Sign Up
-          </Typography>
-          <form onSubmit={handleSignUp}>
-            <TextField
-              label="Email"
-              type="email"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              label="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <TextField
+              name="confirmPassword"
               label="Confirm Password"
               type="password"
-              fullWidth
-              margin="normal"
-              variant="outlined"
+              id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: '1rem' }}
-            >
-              Sign Up
-            </Button>
-          </form>
-        </TabPanel>
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            {selectedTab === 0 ? 'Sign In' : 'Sign Up'}
+          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography align="center">Or continue with</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={handleGoogleSignIn}
+              >
+                Google
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={handleMicrosoftSignIn}
+              >
+                Microsoft
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       </Paper>
     </Container>
-  );
-};
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-const TabPanel: React.FC<TabPanelProps> = (props) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`auth-tabpanel-${index}`}
-      aria-labelledby={`auth-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </div>
   );
 };
 
