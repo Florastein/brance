@@ -1,47 +1,33 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import Auth from './pages/Auth';
 import Courses from './pages/Courses';
+import CourseBuilder from './pages/CourseBuilder';
 import Assessments from './pages/Assessments';
 import Analytics from './pages/Analytics';
 import Messaging from './pages/Messaging';
-import CourseBuilder from './pages/CourseBuilder';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Auth from './pages/Auth';
 import { UserProvider } from './contexts/UserContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import MultiRoleProtectedRoute from './components/MultiRoleProtectedRoute';
+import { Role } from './utils/roles';
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-  },
-});
-
-const App: React.FC = () => {
+const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <UserProvider>
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/assessments" element={<Assessments />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/messaging" element={<Messaging />} />
-            <Route path="/course-builder" element={<CourseBuilder />} />
-          </Routes>
-        </Router>
-      </UserProvider>
-    </ThemeProvider>
+    <UserProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/course-builder" element={<MultiRoleProtectedRoute element={<CourseBuilder />} requiredRoles={[Role.Admin, Role.Lecturer]} />} />
+          <Route path="/assessments" element={<Assessments />} />
+          <Route path="/analytics" element={<ProtectedRoute element={<Analytics />} requiredRole={Role.Admin} />} />
+          <Route path="/messaging" element={<Messaging />} />
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 };
 

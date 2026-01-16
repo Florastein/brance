@@ -1,132 +1,76 @@
-# Blueprint: Modular Learning Platform
+# Project Blueprint
 
-## 1. Overview
+## Overview
 
-This document outlines the system architecture for a modular, microservice-ready learning platform. The platform will provide functionalities for user authentication, course management, assessments, analytics, and messaging.
+This document outlines the plan for creating a new feature-rich Learning Management System (LMS). The application will be built using React and will include features for user authentication, course management, assessments, analytics, and messaging. The application will be styled using Material-UI and will follow a modern, clean design.
 
-## 2. System Architecture
+## Phase 1: Basic UI and Routing (✅ Completed)
 
-The application will be built using a microservices architecture. Each core functionality will be encapsulated within its own service, allowing for independent development, deployment, and scaling. The services will communicate with each other through a well-defined API, likely a RESTful API.
+*   **Objective**: Set up the basic UI and routing for the application.
+*   **Key Features**:
+    *   **Navbar**: A responsive navigation bar with links to all the main pages.
+    *   **Pages**: Create the following pages with basic placeholder content:
+        *   Home
+        *   Courses
+        *   Course Builder
+        *   Assessments
+        *   Analytics
+        *   Messaging
+        *   Login/Authentication
+    *   **Routing**: Implement routing using `react-router-dom` to navigate between the pages.
 
-This modular approach offers several advantages:
-- **Scalability**: Each service can be scaled independently based on demand.
-- **Flexibility**: Different services can be written in different languages or use different technologies if needed.
-- **Resilience**: The failure of one service will not bring down the entire application.
-- **Maintainability**: Smaller, focused services are easier to understand and maintain.
+## Phase 2: User Authentication and Access Management (✅ Completed)
 
-## 3. Core Services
+*   **Objective**: Implement user authentication and role-based access control.
+*   **Key Features**:
+    *   **Authentication**: Allow users to sign up and log in using email/password, Google, and Microsoft accounts.
+    *   **Roles**: Define three user roles: `Admin`, `Lecturer`, and `Student`.
+    *   **Access Control**: Implement the following access control rules:
+        *   **Analytics**: Only `Admin` users can access the analytics page.
+        *   **Course Management**: Only `Admin` and `Lecturer` users can create and edit courses.
+        *   **Student View**: `Student` users can only view courses.
 
-### 3.1. Authentication Service
+## Phase 3: Course Management (✅ Completed)
 
-*   **Purpose**: Manages user identity and access control.
-*   **Responsibilities**:
-    *   User registration and login (email/password, OAuth).
-    *   JWT-based session management.
-    *   Role-based access control (RBAC).
-    *   User profile management.
-*   **Technology**: Node.js with NestJS for a structured and scalable implementation.
+*   **Objective**: Implement the course management features.
+*   **Key Features**:
+    *   **Course Creation**: Allow `Admin` and `Lecturer` users to create new courses.
+    *   **Course Content**: Add support for adding different types of content to courses, such as text, images, videos, and quizzes.
+    *   **Course Publishing**: Allow `Admin` and `Lecturer` users to publish courses, making them available to `Student` users.
 
-### 3.2. Course Management Service
+## Phase 4: Advanced Course Structure and Content Editor (Current)
 
-*   **Purpose**: Handles the creation, organization, and delivery of educational content.
-*   **Responsibilities**:
-    *   Creating and managing courses, modules, and lessons.
-    *   Uploading and storing course materials (videos, documents, etc.) using Supabase Storage.
-    *   Tracking user progress through courses.
-*   **Technology**: Node.js with Express for a lightweight and flexible implementation.
+*   **Objective**: Implement a hierarchical course structure and a rich text editor.
+*   **Key Features**:
+    *   **Hierarchical Course Structure**:
+        *   **Course → Sections → Subsections → Activities**: Create a nested structure for organizing course content.
+        *   **Drag-and-Drop Ordering**: Allow lecturers and admins to easily reorder sections, subsections, and activities.
+        *   **Collapsible Navigation Tree**: Provide a clear and organized view of the course structure.
+        *   **Visibility Controls**: Enable lecturers and admins to control the visibility of each section.
+    *   **Rich Text Editor**:
+        *   **Integration**: Integrate the `tiptap` rich text editor.
+        *   **Content Types**: Support HTML, image, and video embedding, as well as audio and screen recording.
+        *   **Version History**: Track changes to content and allow for rollbacks.
+        *   **Accessibility Checker**: Integrate a WCAG accessibility checker to ensure content is accessible to all users.
 
-### 3.3. Assessment Service
+## Phase 5: Assessments and Quizzes
 
-*   **Purpose**: Manages quizzes, assignments, and other forms of assessment.
-*   **Responsibilities**:
-    *   Creating and managing assessments with various question types.
-    *   Submitting and grading assessments.
-    *   Providing feedback to users.
-*   **Technology**: Node.js with NestJS to handle the complex logic of assessments and grading.
+*   **Objective**: Implement the assessment and quiz features.
+*   **Key Features**:
+    *   **Quiz Creation**: Allow `Admin` and `Lecturer` users to create quizzes with different question types (e.g., multiple-choice, true/false, short answer).
+    *   **Quiz Taking**: Allow `Student` users to take quizzes and view their results.
+    *   **Grading**: Automatically grade quizzes and provide feedback to `Student` users.
 
-### 3.4. Analytics Service
+## Phase 6: Analytics and Reporting
 
-*   **Purpose**: Gathers and analyzes data on user engagement and learning outcomes.
-*   **Responsibilities**:
-    *   Tracking user activity across the platform.
-    *   Generating reports and visualizations on course effectiveness and user performance.
-    *   Providing insights to instructors and administrators.
-*   **Technology**: Node.js with Express. It will likely consume events from other services.
+*   **Objective**: Implement the analytics and reporting features.
+*   **Key Features**:
+    *   **Course Analytics**: Provide `Admin` users with analytics on course enrollment, completion rates, and student performance.
+    *   **Student Analytics**: Provide `Admin` and `Lecturer` users with analytics on individual student progress and performance.
 
-### 3.5. Messaging Service
+## Phase 7: Messaging and Communication
 
-*   **Purpose**: Facilitates communication between users.
-*   **Responsibilities**:
-    *   Real-time chat between instructors and students.
-    *   Discussion forums for courses.
-    *   Notifications and announcements.
-*   **Technology**: Node.js with Express and WebSockets (or a library like Socket.io) for real-time communication.
-
-## 4. Technology Stack
-
-*   **Backend**:
-    *   **Frameworks**: A mix of Node.js with NestJS (for more complex services like Authentication and Assessments) and Express (for lighter services like Course Management and Analytics). This allows us to use the right tool for the job.
-    *   **Language**: TypeScript for type safety and improved developer experience.
-*   **Database**:
-    *   **Primary**: Supabase (PostgreSQL) will be used as the main database for all services.
-    *   **Caching**: Redis will be used for caching frequently accessed data to improve performance.
-*   **Storage**: Supabase Storage will be used for storing user-uploaded files, such as course materials and assignment submissions.
-*   **Frontend**: React (as per the project's initial setup).
-*   **Deployment**: The microservices will be containerized using Docker and can be deployed to a cloud provider like Google Cloud Run or AWS Fargate.
-
-## 5. Next Steps (Current Request)
-
-This document serves as the foundational architectural plan. The next steps will involve implementing the user interface for these features.
-
-*   **Plan**:
-    1.  Install necessary dependencies for routing and a component library.
-    2.  Create a basic layout with a navigation bar.
-    3.  Implement placeholder pages for each of the core services.
-    4.  Style the application for a modern and visually appealing look.
-
-## 6. Phase 2: User & Access Management
-
-### 6.1. Authentication & Identity
-
-This phase focuses on building a robust authentication system and defining user roles and permissions.
-
-*   **Implementation Plan**:
-    1.  **Email/Password Login**:
-        *   Create a sign-up form to register new users with their email and a hashed password.
-        *   Create a login form to authenticate users.
-        *   Implement session management using JWTs.
-    2.  **OAuth Integration**:
-        *   Integrate with Google and Microsoft for third-party authentication.
-        *   Handle user profile creation from OAuth data.
-    3.  **Role System**:
-        *   Define three user roles: `Admin`, `Lecturer`, and `Student`.
-        *   Create a permission matrix that maps each role to specific actions they can perform within the application.
-    4.  **UI Implementation**:
-        *   Update the `Auth.tsx` page to include login and sign-up forms.
-        *   Add buttons for OAuth providers.
-        *   Create a user context to manage the authenticated user's state across the application.
-        *   Implement protected routes to restrict access based on user roles and permissions.
-
-### 6.2. Permission Matrix
-
-| Permission                        | Admin | Lecturer | Student |
-| --------------------------------- | :---: | :------: | :-----: |
-| **Course Management**             |       |          |         |
-| Create/Edit/Delete Courses        |   ✅   |    ✅     |   ❌    |
-| Enroll/Unenroll Users             |   ✅   |    ✅     |   ❌    |
-| View All Courses                  |   ✅   |    ✅     |   ✅    |
-| Access Enrolled Courses           |   ✅   |    ✅     |   ✅    |
-| **Assessments**                   |       |          |         |
-| Create/Edit/Delete Quizzes        |   ✅   |    ✅     |   ❌    |
-| View/Grade Submissions            |   ✅   |    ✅     |   ❌    |
-| Take Quizzes                      |   ❌   |    ❌     |   ✅    |
-| View Own Grades                   |   ✅   |    ✅     |   ✅    |
-| **User Management**               |       |          |         |
-| Create/Edit/Delete Users          |   ✅   |    ❌     |   ❌    |
-| Assign Roles                      |   ✅   |    ❌     |   ❌    |
-| **Analytics**                     |       |          |         |
-| View Platform-Wide Analytics      |   ✅   |    ❌     |   ❌    |
-| View Course-Specific Analytics    |   ✅   |    ✅     |   ❌    |
-| **Messaging**                     |       |          |         |
-| Send Platform-Wide Announcements  |   ✅   |    ❌     |   ❌    |
-| Send Course-Specific Messages     |   ✅   |    ✅     |   ✅    |
+*   **Objective**: Implement the messaging and communication features.
+*   **Key Features**:
+    *   **Announcements**: Allow `Admin` and `Lecturer` users to post announcements to all users or specific courses.
+    *   **Direct Messaging**: Allow users to send direct messages to each other.

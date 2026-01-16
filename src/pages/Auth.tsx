@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Paper, Tabs, Tab, Box, TextField, Button, Typography, Grid, Alert } from '@mui/material';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, OAuthProvider } from 'firebase/auth';
+import { assignDefaultRole } from '../utils/roles';
 
 const Auth: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -9,6 +11,7 @@ const Auth: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
@@ -22,10 +25,16 @@ const Auth: React.FC = () => {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await assignDefaultRole(userCredential.user.uid);
       setError(null);
-    } catch (error: any) {
-      setError(error.message);
+      navigate('/');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
@@ -34,28 +43,45 @@ const Auth: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setError(null);
-    } catch (error: any) {
-      setError(error.message);
+      navigate('/');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+      await assignDefaultRole(userCredential.user.uid);
       setError(null);
-    } catch (error: any) {
-      setError(error.message);
+      navigate('/');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
   const handleMicrosoftSignIn = async () => {
     const provider = new OAuthProvider('microsoft.com');
     try {
-      await signInWithPopup(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+      await assignDefaultRole(userCredential.user.uid);
       setError(null);
-    } catch (error: any) {
-      setError(error.message);
+      navigate('/');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 

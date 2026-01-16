@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container, Typography, Grid, Paper } from '@mui/material';
 
 const services = [
   {
@@ -26,26 +25,22 @@ const services = [
 
 const Home: React.FC = () => {
   return (
-    <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
-      <Typography variant="h3" component="h1" gutterBottom align="center">
-        Welcome to the Modular Learning Platform
-      </Typography>
-      <Typography variant="h5" component="h2" gutterBottom align="center">
-        A microservice-ready application for a modern learning experience.
-      </Typography>
-      <Grid container spacing={4} style={{ marginTop: '2rem' }}>
-        {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} key={service.name}>
-            <Paper elevation={3} style={{ padding: '2rem', height: '100%' }}>
-              <Typography variant="h6" component="h3" gutterBottom>
-                {service.name}
-              </Typography>
-              <Typography>{service.description}</Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <div className="bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center">
+          <h1 className="text-5xl font-extrabold text-gray-900">Welcome to the Modular Learning Platform</h1>
+          <p className="mt-4 text-xl text-gray-600">A microservice-ready application for a modern learning experience.</p>
+        </div>
+        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <div key={service.name} className="bg-white rounded-lg shadow-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900">{service.name}</h3>
+              <p className="mt-4 text-gray-600">{service.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

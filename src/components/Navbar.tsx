@@ -1,43 +1,38 @@
-import React from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
-import { useUser } from '../contexts/UserContext';
+import { UserContext } from '../contexts/UserContextDefinition';
 import { auth } from '../firebase';
-import { signOut } from 'firebase/auth';
+import { Role } from '../utils/roles';
 
-const Navbar: React.FC = () => {
-  const { user, loading } = useUser();
+const Navbar = () => {
+  const { user, role } = useContext(UserContext);
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    await auth.signOut();
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Learning Platform</Link>
-        </Typography>
-        <Button color="inherit" component={Link} to="/courses">Courses</Button>
-        <Button color="inherit" component={Link} to="/assessments">Assessments</Button>
-        <Button color="inherit" component={Link} to="/analytics">Analytics</Button>
-        <Button color="inherit" component={Link} to="/messaging">Messaging</Button>
-        {loading ? (
-          <Typography>Loading...</Typography>
-        ) : user ? (
-          <>
-            <Typography style={{ marginRight: '1rem' }}>{user.email}</Typography>
-            <Button color="inherit" onClick={handleLogout}>Logout</Button>
-          </>
-        ) : (
-          <Button color="inherit" component={Link} to="/auth">Login</Button>
-        )}
-      </Toolbar>
-    </AppBar>
+    <nav className="bg-gray-800 p-4 text-white">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link to="/" className="text-xl font-bold">Learning Platform</Link>
+        <div>
+          <Link to="/courses" className="px-3 py-2 rounded-md text-sm font-medium">Courses</Link>
+          {(role === Role.Admin || role === Role.Lecturer) && (
+            <Link to="/course-builder" className="px-3 py-2 rounded-md text-sm font-medium">Course Builder</Link>
+          )}
+          <Link to="/assessments" className="px-3 py-2 rounded-md text-sm font-medium">Assessments</Link>
+          {role === Role.Admin && (
+            <Link to="/analytics" className="px-3 py-2 rounded-md text-sm font-medium">Analytics</Link>
+          )}
+          <Link to="/messaging" className="px-3 py-2 rounded-md text-sm font-medium">Messaging</Link>
+          {user ? (
+            <button onClick={handleLogout} className="px-3 py-2 rounded-md text-sm font-medium">Logout</button>
+          ) : (
+            <Link to="/auth" className="px-3 py-2 rounded-md text-sm font-medium">Login</Link>
+          )}
+        </div>
+      </div>
+    </nav>
   );
 };
 
