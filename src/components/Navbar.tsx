@@ -5,9 +5,13 @@ import { useUser } from '../contexts/UserContext';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import SchoolIcon from '@mui/icons-material/School';
+import { useThemeContext } from '../contexts/ThemeContext';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 const Navbar: React.FC = () => {
   const { user, loading } = useUser();
+  const { mode, toggleTheme } = useThemeContext();
 
   const handleLogout = async () => {
     try {
@@ -42,6 +46,9 @@ const Navbar: React.FC = () => {
           <Button color="inherit" component={RouterLink} to="/analytics">Analytics</Button>
           <Button color="inherit" component={RouterLink} to="/messaging">Messaging</Button>
         </Box>
+        <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit" aria-label="toggle theme">
+          {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
         {loading ? (
           <Typography sx={{ ml: 2 }}>Loading...</Typography>
         ) : user ? (
