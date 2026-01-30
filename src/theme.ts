@@ -1,13 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
+// Light Theme: White and a shade of blue
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#6200ee',
+      main: '#1976d2', // A standard shade of blue
     },
     secondary: {
-      main: '#03dac6',
+      main: '#42a5f5', // A lighter, complementary blue
     },
     background: {
       default: '#ffffff',
@@ -19,14 +20,15 @@ export const lightTheme = createTheme({
   },
 });
 
+// Dark Theme: A complementary blue palette
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#bb86fc',
+      main: '#90caf9', // A light blue that stands out on a dark background
     },
     secondary: {
-      main: '#03dac6',
+      main: '#64b5f6', // Another complementary blue
     },
     background: {
       default: 'rgba(18, 18, 18, 0.5)',
