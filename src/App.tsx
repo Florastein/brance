@@ -17,10 +17,7 @@ const AppContent: React.FC = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url('/src/assets/background.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        backgroundColor: theme.palette.background.default,
         minHeight: '100vh',
         color: theme.palette.text.primary,
       }}
@@ -29,11 +26,7 @@ const AppContent: React.FC = () => {
         <Navbar />
         <Box
           sx={{
-            backgroundColor:
-              theme.palette.mode === 'dark'
-                ? 'rgba(0, 0, 0, 0.5)'
-                : 'rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(10px)',
+            backgroundColor: theme.palette.background.paper,
             borderRadius: '1rem',
             margin: '2rem',
             padding: '2rem',
